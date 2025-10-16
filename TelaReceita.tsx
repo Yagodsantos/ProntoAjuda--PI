@@ -1,3 +1,4 @@
+import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, StyleSheet } from "react-native";
 import SimpleBlackBarWithToggle from "@/components/SimpleBlackBarWithToggle";
 
@@ -13,27 +14,37 @@ export default function TelaReceita({ onVoltar }: Props) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🍽 MASSA COM RASPA DE PÉ</Text>
-      <Text style={styles.text}>
-        Preparada com pé maturado na botina por 7 dias 🤤
-      </Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.title}>🍽 MASSA COM RASPA DE PÉ</Text>
+        <Text style={styles.text}>
+          Preparada com pé maturado na botina por 7 dias 🤤
+        </Text>
+
+        
+      </View>
 
       <SimpleBlackBarWithToggle
         initialValue={true}
         onToggleChange={handleToggleChange}
       />
-    </View>
+      
+    </SafeAreaView>
+
+    
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: "#3b2e5a",
+  },
+  container: {
+    flex: 1,
     padding: 24,
     justifyContent: "center",
-    paddingBottom: 80,
+    backgroundColor: "#3b2e5a",
   },
   title: {
     fontSize: 28,
