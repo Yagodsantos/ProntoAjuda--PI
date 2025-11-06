@@ -11,7 +11,7 @@ export default function HomeScreen() {
 
   const handleToggleChange = (enabled: boolean): void => {
     if (enabled) {
-      setIsToggleEnabled(true); // Ativou → muda para TelaReceita
+      setIsToggleEnabled(true); // quando ativo muda p telaReceita
     }
   };
 
@@ -19,7 +19,7 @@ export default function HomeScreen() {
     Alert.alert("Ajuda", "Sua solicitação de ajuda foi enviada!");
   };
 
-  // Se toggle estiver ativado, renderiza a tela de receita
+  // Se toggle estiver ativado renderiza a tela de receita
   if (isToggleEnabled) {
     return (
       <TelaReceita onVoltar={() => setIsToggleEnabled(false)} />
@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#00674F",
+    backgroundColor: "#8e8e93",
     padding: 16,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: "#00674F",
+    backgroundColor: "#8e8e93",
   },
   buttonContainer: {
     width: '100%',
