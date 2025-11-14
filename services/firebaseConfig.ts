@@ -1,15 +1,14 @@
-// src/services/firebaseConfig.ts
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "my_api_key",
-  authDomain: "prontoajuda.firebaseapp.com",
-  projectId: "MY_PROJECT_ID",
-  storageBucket: "MY_PROJECT.appspot.com",
-  messagingSenderId: "MY_SENDER_ID",
-  appId: "MY_APP_ID"
+  apiKey: "AIzaSyDLfHdsK2pF_ZBo6mSkYBHLqJfnXph_yjI",
+  authDomain: "prontoajuda-1o.firebaseapp.com",
+  projectId: "prontoajuda-1o",
+  storageBucket: "prontoajuda-1o.firebasestorage.app",
+  messagingSenderId: "543631551766",
+  appId: "1:543631551766:web:bd9211411370c611867437",
+  measurementId: "G-Q338R81NZE"
 };
-
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
