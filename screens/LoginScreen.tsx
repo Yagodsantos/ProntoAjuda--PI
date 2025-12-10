@@ -1,9 +1,11 @@
 import InputField from "@/components/InputField";
 import PrimaryButton from "@/components/PrimaryButton";
 import { auth } from "@/services/firebaseConfig";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 
 type Props = {
   onLoginSuccess: () => void;
@@ -22,21 +24,64 @@ export default function LoginScreen({
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+  
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Erro", "Preencha todos os campos");
       return;
     }
+
+
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
       onLoginSuccess();
-    } catch (err: any) {
-      Alert.alert("Erro ao entrar", err?.message ?? "Ocorreu um erro");
-    } finally {
-      setLoading(false);
-    }
+    }  catch (error: any) {
+      let message = "Erro ao fazer login. Tente novamente.";
+
+      switch (error.code) {
+        case "auth/invalid-credential":
+        case "auth/wrong-password":
+          message = "Senha incorreta.";
+          break;
+
+        case "auth/user-not-found":
+          message = "Nenhuma conta encontrada com este email.";
+          break;
+
+        case "auth/invalid-email":
+          message = "Email inválido.";
+          break;
+
+        case "auth/missing-password":
+          message = "Digite sua senha.";
+          break;
+
+        default:
+          message = "Ocorreu um erro inesperado.";
+          break;
+      }
+
+    
+      Alert.alert("Erro", message);
+    } 
+
   };
+
+  const handleResetPassword = async () => {
+  if (!email) {
+    Alert.alert("Erro", "Digite seu email para recuperar a senha.");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    Alert.alert("Sucesso", "Enviamos um link para seu email!");
+  } catch (error) {
+    Alert.alert("Erro", "Não foi possível enviar o email de recuperação.");
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -66,6 +111,12 @@ export default function LoginScreen({
       <TouchableOpacity onPress={onSkipLogin}>
         <Text style={styles.skip}>Entrar sem login →</Text>
       </TouchableOpacity>
+      
+      <TouchableOpacity onPress={handleResetPassword}>
+    <Text style={{ textAlign: "center", marginTop: 20, color: "#ff3c00ff" }}>
+    Esqueci minha senha
+    </Text>
+  </TouchableOpacity>
     </View>
   );
 }

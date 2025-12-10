@@ -1,34 +1,50 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import HomeScreen from "@/components/telaChamada";
-import TelaReceita from "@/components/TelaReceita";
 import LoginScreen from "@/app/(tabs)/screens/LoginScreen";
 import RegisterScreen from "@/app/(tabs)/screens/RegisterScreen";
+import ProfileScreen from "@/app/(tabs)/screens/ProfileScreen";
 
 export default function Index() {
-  const [screen, setScreen] = useState("login");
+  const [screen, setScreen] = useState<"login" | "home" | "register" | "account">("login");
 
+  const goToLogin = () => setScreen("login");
   const goToHome = () => setScreen("home");
   const goToRegister = () => setScreen("register");
-  const backToLogin = () => setScreen("login");
+  const goToAccount = () => setScreen("account");
 
+  // tela de login
   if (screen === "login") {
     return (
       <LoginScreen
         onLoginSuccess={goToHome}
         onNavigateToRegister={goToRegister}
-        onSkipLogin={goToHome}      // ➜ ENTRAR SEM LOGIN
+        onSkipLogin={goToHome}
       />
     );
-  }
+  
+}
 
+  // Tela de cadastro
   if (screen === "register") {
     return (
       <RegisterScreen
         onRegisterSuccess={goToHome}
-        onNavigateBack={backToLogin}
+        onNavigateBack={goToLogin}
       />
     );
   }
 
-  return <HomeScreen />;
-}
+  // Tela de perfil
+  if (screen === "account") {
+    return <ProfileScreen onBackHome={goToHome} />;
+  }
+
+
+  return (
+    <HomeScreen
+      onOpenLogin={() => setScreen("login")}
+      onOpenAccount={goToAccount}
+    />
+  );
+} 
+  

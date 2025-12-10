@@ -1,10 +1,11 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, StyleSheet, Alert, Text, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Alert, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from "expo-location";
+import { getAuth } from "firebase/auth";
 
-import SimpleBlackBarWithToggle from "@/components/SimpleBlackBarWithToggle";
+import ModeSelector from "@/components/SimpleBlackBarWithToggle";
 import HelpButton from "@/components/HelpButton";
 import TelaReceita from "./TelaReceita";
 import {
@@ -13,16 +14,23 @@ import {
   WeatherData,
 } from "@/services/apis/apiTempo";
 
-export default function HomeScreen() {
+interface HomeScreenProps {
+  onOpenLogin: () => void;
+  onOpenAccount: () => void;
+}
+
+export default function HomeScreen({ onOpenLogin, onOpenAccount }: HomeScreenProps) {
   const [isToggleEnabled, setIsToggleEnabled] = useState(false);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState("São Paulo");
 
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const loadWeatherData = async () => {
     setLoading(true);
     try {
-      // Tenta pegar pela localização atual
       let { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status === "granted") {
@@ -34,7 +42,6 @@ export default function HomeScreen() {
         setWeather(weatherData);
         setCity(weatherData.name);
       } else {
-        // Fallback para cidade padrão
         const weatherData = await getWeatherByCity(city);
         setWeather(weatherData);
       }
@@ -56,7 +63,6 @@ export default function HomeScreen() {
     Alert.alert("Ajuda", "Sua solicitação de ajuda foi enviada!");
   };
 
-  // Função para definir cores baseadas no clima
   const getGradientColors = () => {
     if (!weather) return ["#87CEEB", "#4682B4"] as const;
 
@@ -75,7 +81,6 @@ export default function HomeScreen() {
     loadWeatherData();
   }, []);
 
-  // Se toggle estiver ativado renderiza a tela de receita
   if (isToggleEnabled) {
     return <TelaReceita onVoltar={() => setIsToggleEnabled(false)} />;
   }
@@ -83,6 +88,18 @@ export default function HomeScreen() {
   return (
     <LinearGradient colors={getGradientColors()} style={styles.gradient}>
       <SafeAreaView style={styles.safeArea}>
+
+        {/*botao no canto superior direito*/}
+        <TouchableOpacity
+          style={styles.accountButton}
+          onPress={user ? onOpenAccount : onOpenLogin}
+        >
+          <Text style={styles.accountText}>
+            {user ? "Minha Conta" : "Entrar"}
+          </Text>
+        </TouchableOpacity>
+       
+
         <View style={styles.container}>
           {loading ? (
             <ActivityIndicator size="large" color="#ffffff" />
@@ -126,7 +143,8 @@ export default function HomeScreen() {
           <HelpButton onPress={handleHelpPress} />
         </View>
 
-        <SimpleBlackBarWithToggle onToggleChange={handleToggleChange} />
+        <ModeSelector onToggleChange={handleToggleChange} />
+
       </SafeAreaView>
     </LinearGradient>
   );
@@ -139,6 +157,23 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
+//botao superior
+accountButton: {
+  position: "absolute",
+  top: 40,            
+  left: 16,         
+  paddingVertical: 8,
+  paddingHorizontal: 14,
+  backgroundColor: "rgba(255,255,255,0.25)",
+  borderRadius: 10,
+  zIndex: 10,
+},
+  accountText: {
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+
   container: {
     flex: 1,
     justifyContent: "center",

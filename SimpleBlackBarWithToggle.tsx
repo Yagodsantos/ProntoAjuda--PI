@@ -1,42 +1,72 @@
-import { View, Switch, StyleSheet } from "react-native";
-import { useState, useEffect } from "react";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { useState } from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Props = {
-  onToggleChange: (enabled: boolean) => void;
+  onToggleChange: (enabled: boolean) => void; 
   initialValue?: boolean;
 };
 
-export default function SimpleBlackBarWithToggle({ onToggleChange, initialValue = false }: Props) {
-  const [isEnabled, setIsEnabled] = useState(initialValue);
+export default function ModeSelector({ onToggleChange, initialValue = false }: Props) {
+  const [isWeather, setIsWeather] = useState(initialValue);
 
-  const toggleSwitch = () => {
-    const newValue = !isEnabled;
-    setIsEnabled(newValue);
+  const toggleMode = () => {
+    const newValue = !isWeather;
+    setIsWeather(newValue);
     onToggleChange(newValue);
   };
 
-  useEffect(() => {
-    setIsEnabled(initialValue);
-  }, [initialValue]);
-
   return (
-    <View style={styles.bar}>
-      <Switch
-        
-        trackColor={{ false: "#767577", true: "#81b0ff" }}
-        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-        onValueChange={toggleSwitch}
-        value={isEnabled}
-      />
+    <View style={styles.container}>
+      <View style={styles.row}>
+
+      
+        <TouchableOpacity
+          style={[styles.toggle, isWeather && styles.toggleOn]}
+          onPress={toggleMode}
+        >
+          <View style={[styles.knob, isWeather && styles.knobOn]} />
+        </TouchableOpacity>
+        <MaterialCommunityIcons
+          name={isWeather ? "weather-partly-cloudy" : "food"}
+          size={40}
+          color="#808080ff"
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  bar: {
-    backgroundColor: "#000",
-    width: "100%",
+  container: {
+    padding: 20,
+  },
+  row: {
+    flexDirection: "row",
     alignItems: "center",
-    padding: 12,
+    gap: 20,
+  },
+
+  toggle: {
+    width: 55,
+    height: 30,
+    borderRadius: 30,
+    backgroundColor: "#ccc",
+    padding: 3,
+    justifyContent: "center",
+  },
+  toggleOn: {
+    backgroundColor: "#4CAF50",
+  },
+
+  knob: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    marginLeft: 0,
+  },
+  knobOn: {
+    marginLeft: 25,
   },
 });

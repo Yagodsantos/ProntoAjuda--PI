@@ -1,5 +1,3 @@
-// services/weatherService.ts
-
 const API_KEY = '94746cc1049c01161b98d42c367b045d';
 
 export interface WeatherData {
