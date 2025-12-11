@@ -8,11 +8,13 @@ import { getAuth } from "firebase/auth";
 import ModeSelector from "@/components/SimpleBlackBarWithToggle";
 import HelpButton from "@/components/HelpButton";
 import TelaReceita from "./TelaReceita";
+
 import {
   getWeatherByCity,
   getWeatherByCoords,
   WeatherData,
 } from "@/services/apis/apiTempo";
+
 
 interface HomeScreenProps {
   onOpenLogin: () => void;
